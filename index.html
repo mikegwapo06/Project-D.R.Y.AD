@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chainsaw & Fire Detection</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        h1 { color: #ff5722; }
+        .image-container { display: flex; flex-wrap: wrap; justify-content: center; }
+        .image-card { margin: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; }
+        img { width: 300px; height: auto; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Chainsaw & Fire Detections</h1>
+    <div class="image-container" id="images"></div>
+
+    <script>
+        async function fetchImages() {
+            const repoOwner = "https://github.com/mikegwapo06"; // Change this to your GitHub username
+            const repoName = "Project D.R.Y.A.D"; // Your repository name
+            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues`;
+
+            const response = await fetch(apiUrl);
+            const issues = await response.json();
+            
+            const imageContainer = document.getElementById("images");
+            imageContainer.innerHTML = "";
+
+            issues.forEach(issue => {
+                if (issue.body.includes("![image](")) {
+                    const imgUrl = issue.body.match(/!\[image\]\((.*?)\)/)[1];
+                    const div = document.createElement("div");
+                    div.className = "image-card";
+                    div.innerHTML = `<img src="${imgUrl}" alt="Detected Image"><p>Detected at: ${issue.created_at}</p>`;
+                    imageContainer.appendChild(div);
+                }
+            });
+        }
+
+        fetchImages();
+    </script>
+</body>
+</html>
